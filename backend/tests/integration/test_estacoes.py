@@ -54,6 +54,14 @@ async def test_atualizar_cotas_como_admin(
     assert data["cota_alerta"] == "2.40"
     assert data["cota_emergencia"] == "3.10"
 
+    status = await client.get("/api/v1/estacoes/status-atual")
+    assert status.status_code == 200
+    estacao_atualizada = next(
+        item for item in status.json() if item["estacao_id"] == str(estacoes_seed[0].id)
+    )
+    assert estacao_atualizada["nivel_atual_metros"] == "1.85"
+    assert estacao_atualizada["classificacao_risco"] == "ATENCAO"
+
 
 @pytest.mark.asyncio
 async def test_atualizar_cotas_como_operador_retorna_403(

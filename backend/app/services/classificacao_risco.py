@@ -66,5 +66,12 @@ async def obter_status_atual_estacoes(db: AsyncSession) -> list[StatusAtualRespo
             "emergencia": row_dict.get("cota_emergencia"),
         }
         row_dict["cotas"] = cotas_data
+        # A classificação armazenada na leitura representa as cotas vigentes
+        # no momento da medição. Como as cotas podem ser alteradas depois,
+        # o status atual precisa ser recalculado com os limiares atuais.
+        row_dict["classificacao_risco"] = classificar_risco(
+            row_dict["nivel_atual_metros"],
+            CotasSchema.model_validate(cotas_data),
+        ).value
         status_list.append(StatusAtualResponse.model_validate(row_dict))
     return status_list

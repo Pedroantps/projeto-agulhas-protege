@@ -54,7 +54,6 @@ async def listar_ocorrencias(
             id=o.id,
             estacao_id=o.estacao_id,
             estacao_nome=o.estacao.nome if o.estacao else None,
-            usuario_id=o.usuario_id,
             usuario_nome=o.usuario.nome if o.usuario else None,
             alerta_id=o.alerta_id,
             localizacao=o.localizacao,
@@ -107,21 +106,26 @@ async def criar_ocorrencia(
     )
 
     await db.commit()
-    await db.refresh(ocorrencia)
 
-    estacao_nome = getattr(ocorrencia.estacao, "nome", None) if getattr(ocorrencia, "estacao", None) else None
+    stmt = (
+        select(Ocorrencia)
+        .options(selectinload(Ocorrencia.estacao), selectinload(Ocorrencia.usuario))
+        .where(Ocorrencia.id == ocorrencia.id)
+    )
+    res = await db.execute(stmt)
+    item = res.scalar_one()
+
     return OcorrenciaResponse(
-        id=ocorrencia.id,
-        estacao_id=ocorrencia.estacao_id,
-        estacao_nome=estacao_nome,
-        usuario_id=usuario.id,
-        usuario_nome=usuario.nome,
-        alerta_id=ocorrencia.alerta_id,
-        localizacao=ocorrencia.localizacao,
-        descricao=ocorrencia.descricao,
-        status=ocorrencia.status.value if hasattr(ocorrencia.status, "value") else str(ocorrencia.status),
-        criado_em=ocorrencia.criado_em,
-        atualizado_em=ocorrencia.atualizado_em,
+        id=item.id,
+        estacao_id=item.estacao_id,
+        estacao_nome=item.estacao.nome if item.estacao else None,
+        usuario_nome=item.usuario.nome if item.usuario else usuario.nome,
+        alerta_id=item.alerta_id,
+        localizacao=item.localizacao,
+        descricao=item.descricao,
+        status=item.status.value if hasattr(item.status, "value") else str(item.status),
+        criado_em=item.criado_em,
+        atualizado_em=item.atualizado_em,
     )
 
 
@@ -185,7 +189,6 @@ async def atualizar_status_ocorrencia(
         id=item.id,
         estacao_id=item.estacao_id,
         estacao_nome=item.estacao.nome if item.estacao else None,
-        usuario_id=item.usuario_id,
         usuario_nome=item.usuario.nome if item.usuario else None,
         alerta_id=item.alerta_id,
         localizacao=item.localizacao,

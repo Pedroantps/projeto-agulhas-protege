@@ -15,7 +15,6 @@ export const HomePublica: React.FC = () => {
   const [periodo, setPeriodo] = useState(24);
 
   const rawList = Array.isArray(estacoes) ? estacoes : [];
-  // Foco exclusivo no Rio Sesmaria (remove qualquer outro rio mockado)
   const sesmariaOnly = rawList.filter(
     (e) =>
       e.rio?.toLowerCase().includes('sesmaria') ||
@@ -163,8 +162,8 @@ export const HomePublica: React.FC = () => {
                       key={opt.value}
                       onClick={() => setPeriodo(opt.value)}
                       className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${periodo === opt.value
-                          ? 'bg-brand text-white shadow-sm'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
+                        ? 'bg-brand text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
                         }`}
                       aria-pressed={periodo === opt.value}
                     >
