@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.env
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.uv-cache/
+.uv-python/
+htmlcov/
+.coverage
+
+# Node.js
+node_modules/
+dist/
+.vite/
+coverage/
+*.tsbuildinfo
+test-results/
+playwright-report/
+
+
+# Docker
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets — NUNCA commitar
+*.pem
+*.key
+
+plans
+
