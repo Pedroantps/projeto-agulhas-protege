@@ -64,4 +64,3 @@ class AtualizarStatusOcorrenciaRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     status: str
-

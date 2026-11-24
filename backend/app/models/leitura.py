@@ -8,7 +8,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Index, Numeric, String, desc
+from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Index, Numeric, String, UniqueConstraint, desc
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampCreatedAt, UUIDPrimaryKey
@@ -31,7 +31,10 @@ class LeituraNivel(Base):
     """Medição do nível de uma estação em um instante."""
 
     __tablename__ = "leituras_nivel"
-    __table_args__ = (Index("idx_leituras_estacao_data", "estacao_id", desc("data_hora")),)
+    __table_args__ = (
+        Index("idx_leituras_estacao_data", "estacao_id", desc("data_hora")),
+        UniqueConstraint("estacao_id", "data_hora", name="uq_leituras_estacao_data_hora"),
+    )
 
     id: Mapped[UUIDPrimaryKey]
     estacao_id: Mapped[UUID] = mapped_column(

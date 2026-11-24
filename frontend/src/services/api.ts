@@ -43,6 +43,14 @@ function getErrorDetail(body: unknown): string {
 
   const data = body as Record<string, unknown>;
   if (typeof data.detail === 'string') return data.detail;
+  // Erros de validação do Pydantic chegam como lista em `detail`.
+  if (Array.isArray(data.detail) && data.detail.length > 0) {
+    const first = data.detail[0] as { loc?: unknown[]; msg?: string };
+    if (first.loc?.includes('email')) {
+      return 'Informe um e-mail válido, por exemplo nome@dominio.com.';
+    }
+    if (first.msg) return first.msg.replace(/^Value error, /, '');
+  }
   if (typeof data.erro === 'string') return data.erro;
   return 'Erro desconhecido.';
 }
@@ -172,6 +180,11 @@ export const atualizarStatusOcorrencia = (
     body: JSON.stringify({ status }),
   });
 
+export const excluirOcorrencia = (id: string): Promise<void> =>
+  request<void>(`/ocorrencias/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+
 export const atualizarCotas = (estacaoId: string, data: CotasInput) =>
   request(`/estacoes/${encodeURIComponent(estacaoId)}/cotas`, {
     method: 'PUT',
@@ -184,6 +197,23 @@ export const loginApi = (data: { email: string; senha: string }) =>
     method: 'POST',
     body: JSON.stringify(data),
   });
+
+/**
+ * Restaura a sessão a partir dos cookies httpOnly (após recarregar a página).
+ * Tenta renovar com o refresh token uma vez; devolve null se não houver sessão válida.
+ */
+export const restaurarSessao = async (): Promise<LoginResponse | null> => {
+  try {
+    return await request<LoginResponse>('/auth/me');
+  } catch {
+    try {
+      await request('/auth/refresh', { method: 'POST' });
+      return await request<LoginResponse>('/auth/me');
+    } catch {
+      return null;
+    }
+  }
+};
 
 export const logoutApi = (): Promise<void> =>
   request<void>('/auth/logout', {
@@ -260,6 +290,13 @@ export interface SesmariaDashboardResponse {
   recomendacao_funil: RecomendacaoFunil;
   eventos_criticos_base: number;
   mensagem_alerta_whatsapp: string;
+  dados_disponiveis: boolean;
+  fonte_dados: string;
+  coletado_em: string | null;
+  chuva_estacao_1h_mm: string | null;
+  chuva_estacao_24h_mm: string | null;
+  foto_estacao_url: string | null;
+  foto_estacao_data_hora: string | null;
 }
 
 export const fetchSesmariaDashboard = (): Promise<SesmariaDashboardResponse> =>
@@ -269,3 +306,24 @@ export const fetchAlertaWhatsApp = (): Promise<{
   mensagem: string;
   url_whatsapp: string;
 }> => request('/sesmaria/alerta-whatsapp');
+
+export interface StatusColeta {
+  habilitada: boolean;
+  intervalo_minutos: number;
+  ultima_coleta: string | null;
+  ultima_leitura: string | null;
+  total_leituras: number;
+  fontes: string[];
+}
+
+export interface ExecucaoColeta {
+  leituras_novas: number;
+  fontes_ok: string[];
+  erros: Record<string, string>;
+}
+
+export const fetchStatusColeta = (): Promise<StatusColeta> =>
+  request('/coleta/status');
+
+export const executarColeta = (): Promise<ExecucaoColeta> =>
+  request('/coleta/executar', { method: 'POST' });

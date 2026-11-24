@@ -169,3 +169,45 @@ async def test_atualizar_status_ocorrencia(
     assert patch_res.status_code == 200
     assert patch_res.json()["status"] == "EM_ANDAMENTO"
 
+
+
+@pytest.mark.asyncio
+async def test_excluir_ocorrencia_registra_auditoria(
+    client: AsyncClient,
+    operador_cookies: dict[str, str],
+    estacoes_seed: list[EstacaoMonitoramento],
+    db: InMemoryAsyncSession,
+) -> None:
+    """Operador exclui a ocorrência (204) e o audit_log guarda os dados removidos."""
+    criada = await client.post(
+        "/api/v1/ocorrencias",
+        json={
+            "estacao_id": str(estacoes_seed[0].id),
+            "localizacao": "Rua do Comércio, 120",
+            "descricao": "Árvore caída obstruindo a via próxima ao rio.",
+        },
+        cookies=operador_cookies,
+    )
+    ocorrencia_id = criada.json()["id"]
+
+    resposta = await client.delete(f"/api/v1/ocorrencias/{ocorrencia_id}", cookies=operador_cookies)
+    assert resposta.status_code == 204
+    assert db.ocorrencias == []
+    assert any(log.acao == "DELETE_OCORRENCIA" for log in db.audit_logs)
+
+
+@pytest.mark.asyncio
+async def test_excluir_ocorrencia_inexistente_retorna_404(
+    client: AsyncClient,
+    operador_cookies: dict[str, str],
+) -> None:
+    resposta = await client.delete(
+        "/api/v1/ocorrencias/00000000-0000-0000-0000-000000000000", cookies=operador_cookies
+    )
+    assert resposta.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_excluir_ocorrencia_sem_login_retorna_401(client: AsyncClient) -> None:
+    resposta = await client.delete("/api/v1/ocorrencias/00000000-0000-0000-0000-000000000000")
+    assert resposta.status_code == 401

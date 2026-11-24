@@ -8,6 +8,7 @@ import {
   Filter,
   MapPin,
   Radio,
+  Trash2,
   ShieldAlert,
   User,
 } from 'lucide-react';
@@ -15,6 +16,7 @@ import { Panel } from '@/components/common';
 import { useOcorrencias } from '@/hooks/useOcorrencias';
 import {
   atualizarStatusOcorrencia,
+  excluirOcorrencia,
   type OcorrenciaItem,
 } from '@/services/api';
 
@@ -54,6 +56,27 @@ export const ListaOcorrencias: React.FC<ListaOcorrenciasProps> = ({
       toast.error('Erro ao atualizar status da ocorrência.');
     },
   });
+
+  const exclusao = useMutation({
+    mutationFn: (id: string) => excluirOcorrencia(id),
+    onSuccess: () => {
+      toast.success('Ocorrência excluída. A exclusão ficou registrada na auditoria.');
+      void queryClient.invalidateQueries({ queryKey: ['ocorrencias'] });
+    },
+    onError: () => {
+      toast.error('Erro ao excluir a ocorrência.');
+    },
+  });
+
+  const confirmarExclusao = (oco: OcorrenciaItem) => {
+    if (
+      window.confirm(
+        `Excluir a ocorrência em "${oco.localizacao}"? Esta ação não pode ser desfeita.`,
+      )
+    ) {
+      exclusao.mutate(oco.id);
+    }
+  };
 
   const ocorrenciasFiltradas = ocorrencias.filter((item) => {
     if (filtroStatus === 'TODAS') return true;
@@ -298,6 +321,15 @@ export const ListaOcorrencias: React.FC<ListaOcorrenciasProps> = ({
                         Reabrir
                       </button>
                     )}
+                    <button
+                      onClick={() => confirmarExclusao(oco)}
+                      disabled={exclusao.isPending}
+                      className="rounded-lg border border-red-200 p-1.5 text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-900/30"
+                      title="Excluir ocorrência"
+                      aria-label={`Excluir ocorrência em ${oco.localizacao}`}
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
                   </div>
                 )}
               </div>

@@ -16,8 +16,8 @@ test.describe('Fluxo de Login', () => {
     });
 
     await page.goto('/login');
-    await page.fill('#email', 'operador@defesacivil.resende.rj.gov.br');
-    await page.fill('#senha', 'Operador@2026');
+    await page.fill('#email', 'testecomum@teste.com');
+    await page.fill('#senha', 'Teste@2029');
     await page.click('#btn-login');
     await expect(page).toHaveURL(/.*dashboard/);
   });
@@ -34,7 +34,7 @@ test.describe('Fluxo de Login', () => {
     });
 
     await page.goto('/login');
-    await page.fill('#email', 'operador@defesacivil.resende.rj.gov.br');
+    await page.fill('#email', 'testecomum@teste.com');
     await page.fill('#senha', 'senha_errada');
     await page.click('#btn-login');
     await expect(page.getByRole('status')).toContainText(

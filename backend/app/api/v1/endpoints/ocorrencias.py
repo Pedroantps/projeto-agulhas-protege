@@ -129,7 +129,6 @@ async def criar_ocorrencia(
     )
 
 
-
 @router.patch(
     "/{ocorrencia_id}/status",
     response_model=OcorrenciaResponse,
@@ -198,3 +197,42 @@ async def atualizar_status_ocorrencia(
         atualizado_em=item.atualizado_em,
     )
 
+
+@router.delete(
+    "/{ocorrencia_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Excluir ocorrência",
+)
+async def excluir_ocorrencia(
+    ocorrencia_id: UUID,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    usuario: Usuario = Depends(require_operador),
+) -> None:
+    """Remove a ocorrência e grava o evento (com os dados excluídos) no audit_log."""
+    result = await db.execute(select(Ocorrencia).where(Ocorrencia.id == ocorrencia_id))
+    ocorrencia = result.scalar_one_or_none()
+    if not ocorrencia:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Ocorrência não encontrada.",
+        )
+
+    dados_excluidos = {
+        "estacao_id": str(ocorrencia.estacao_id),
+        "localizacao": ocorrencia.localizacao,
+        "descricao": ocorrencia.descricao,
+        "status": str(ocorrencia.status),
+    }
+    await registrar_audit_log(
+        db,
+        usuario_id=usuario.id,
+        acao="DELETE_OCORRENCIA",
+        entidade="ocorrencias",
+        entidade_id=ocorrencia.id,
+        dados_anteriores=dados_excluidos,
+        ip_address=request.client.host if request.client else None,
+        request_id=request.headers.get("X-Request-ID"),
+    )
+    await db.delete(ocorrencia)
+    await db.commit()

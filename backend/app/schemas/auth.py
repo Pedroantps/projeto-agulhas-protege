@@ -28,3 +28,12 @@ class LoginResponse(BaseModel):
     nome: str
     perfil: str  # "ADMINISTRADOR" | "OPERADOR_DEFESA_CIVIL"
     mensagem: str = "Login realizado com sucesso."
+
+
+class UsuarioAtualResponse(BaseModel):
+    """Identidade do usuário autenticado (restaura a sessão após recarregar a página)."""
+
+    model_config = ConfigDict(strict=True)
+
+    nome: str
+    perfil: str

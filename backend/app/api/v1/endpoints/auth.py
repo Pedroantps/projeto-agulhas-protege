@@ -8,7 +8,7 @@ from slowapi.util import get_remote_address
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_db
+from app.api.v1.dependencies import get_current_user, get_db
 from app.core.config import settings
 from app.core.security import (
     clear_auth_cookies,
@@ -20,7 +20,7 @@ from app.core.security import (
 )
 from app.models.refresh_token import RefreshToken
 from app.models.usuario import Usuario
-from app.schemas.auth import LoginRequest, LoginResponse
+from app.schemas.auth import LoginRequest, LoginResponse, UsuarioAtualResponse
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
 limiter = Limiter(key_func=get_remote_address)
@@ -76,6 +76,12 @@ async def login(
         perfil=usuario.perfil.value,
         mensagem="Login realizado com sucesso.",
     )
+
+
+@router.get("/me", response_model=UsuarioAtualResponse, summary="Usuário autenticado")
+async def me(usuario: Usuario = Depends(get_current_user)) -> UsuarioAtualResponse:
+    """Devolve nome e perfil do usuário do cookie de sessão (401 se não houver sessão)."""
+    return UsuarioAtualResponse(nome=usuario.nome, perfil=usuario.perfil.value)
 
 
 @router.post("/refresh", summary="Renovar sessão")

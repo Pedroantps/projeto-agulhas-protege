@@ -8,7 +8,7 @@ from app.db.base import Base
 from app.models import Alerta, LeituraNivel, NivelRisco, RefreshToken
 
 
-def test_metadata_contem_as_oito_tabelas_da_fase() -> None:
+def test_metadata_contem_as_tabelas_do_sistema() -> None:
     assert set(Base.metadata.tables) == {
         "usuarios",
         "estacoes_monitoramento",
@@ -18,6 +18,7 @@ def test_metadata_contem_as_oito_tabelas_da_fase() -> None:
         "ocorrencias",
         "refresh_tokens",
         "audit_log",
+        "coletas_bacia",
     }
 
 

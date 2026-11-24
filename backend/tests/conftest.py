@@ -11,6 +11,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 os.environ.setdefault("DATABASE_URL", "postgresql+psycopg://agulhas:test@localhost/agulhas_test")
+os.environ.setdefault("COLETA_HABILITADA", "false")
 os.environ.setdefault("JWT_SECRET_KEY", "test-key-with-at-least-thirty-two-characters")
 
 from app.api.v1.dependencies import get_db  # noqa: E402
@@ -133,6 +134,10 @@ class InMemoryAsyncSession:
                 setattr(instance, "id", len(self.audit_logs) + 1)  # noqa: B010
             self.audit_logs.append(instance)
 
+    async def delete(self, instance: Any) -> None:
+        if isinstance(instance, Ocorrencia) and instance in self.ocorrencias:
+            self.ocorrencias.remove(instance)
+
     async def commit(self) -> None:
         pass
 
@@ -194,7 +199,7 @@ class InMemoryAsyncSession:
             return MockResult([])
 
         # Consulta de status atual das estações (UC01)
-        if "SELECT DISTINCT ON" in sql or ("FROM estacoes_monitoramento" in sql and "JOIN" in sql):
+        if "SELECT DISTINCT ON" in sql:
             rows: list[dict[str, Any]] = []
             now = datetime.now(UTC)
             for estacao_id, est in self.estacoes_by_id.items():

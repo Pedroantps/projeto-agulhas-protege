@@ -36,7 +36,7 @@ async def security_headers_middleware(request: Request, call_next: RequestHandle
         "script-src 'self'; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data:; "
+        "img-src 'self' data: https://resources.cemaden.gov.br; "
         "connect-src 'self'"
     )
     return response

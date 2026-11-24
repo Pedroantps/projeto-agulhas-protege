@@ -95,7 +95,7 @@ export const DashboardDefesaCivil: React.FC = () => {
             </span>
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Acompanhamento operacional, registro de ocorrências, correlação hidrológica e predição com IA.
+            Acompanhamento operacional, registro de ocorrências, correlação hidrológica e previsão com dados reais.
           </p>
 
         </div>
@@ -159,8 +159,8 @@ export const DashboardDefesaCivil: React.FC = () => {
 
         {sesmariaData && (
           <>
-            {/* Seção 2: Modelo Preditivo de IA (+24h, +48h, +72h) */}
-            <section aria-label="Previsão de IA">
+            {/* Seção 2: Modelo Preditivo (+24h, +48h, +72h) */}
+            <section aria-label="Previsão do nível">
               <PainelPrevisaoIA previsoes={sesmariaData.previsoes} />
             </section>
 

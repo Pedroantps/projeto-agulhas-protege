@@ -11,12 +11,12 @@ export const PainelPrevisaoIA: React.FC<PainelPrevisaoIAProps> = ({ previsoes })
   return (
     <Panel
       id="painel-previsao-ia"
-      title="Modelo Preditivo de IA — Projeção do Rio Sesmaria"
+      title="Modelo Preditivo — Projeção do Rio Sesmaria"
       className="space-y-6"
     >
       <div className="flex flex-col gap-1 border-b border-slate-100 pb-3 dark:border-slate-800">
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          Previsão de cheias baseada em Redes Neurais correlacionando previsão meteorológica do INMET (chuva real + prevista), vazão do Funil e histórico ponderado para eventos críticos (&gt; 2,50m).
+          Projeção calculada a partir do nível real medido pelo CEMADEN, da chuva observada e prevista (Open-Meteo) na cabeceira e em Resende e da vazão do Funil (ONS). Modelo hidrológico simplificado com cenários de chuva; não substitui os comunicados oficiais da Defesa Civil.
         </p>
       </div>
 

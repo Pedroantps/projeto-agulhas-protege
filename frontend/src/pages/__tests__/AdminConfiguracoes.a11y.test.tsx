@@ -10,6 +10,7 @@ import type { EstacoesStatusResponse } from '@/services/api';
 
 vi.mock('@/hooks/useAuth');
 vi.mock('@/hooks/useEstacoes');
+vi.mock('@/components/PainelColeta', () => ({ PainelColeta: () => null }));
 
 function mockQueryResult<T>(
   partial: Partial<UseQueryResult<T, Error>>,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Activity, ArrowLeft, LogOut, Settings, Sliders } from 'lucide-react';
-import { ModalGerenciarCotas } from '@/components';
+import { ModalGerenciarCotas, PainelColeta } from '@/components';
 import {
   CardSkeleton,
   Panel,
@@ -188,6 +188,8 @@ export const AdminConfiguracoes: React.FC = () => {
             </div>
           </Panel>
         )}
+
+        <PainelColeta />
 
         {/* Modal de gerenciamento de cotas */}
         {estacaoParaEditar && (

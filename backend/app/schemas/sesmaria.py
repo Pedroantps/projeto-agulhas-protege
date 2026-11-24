@@ -100,5 +100,14 @@ class SesmariaDashboardResponse(BaseModel):
     correlacoes: list[CorrelacaoVariavel]
     previsoes: list[PrevisaoNivelDia]
     recomendacao_funil: RecomendacaoFunil
-    eventos_criticos_base: int  # Amostras tratadas onde o rio esteve > 2.5m
+    eventos_criticos_base: int  # Leituras reais da base em que o rio atingiu a cota de alerta
     mensagem_alerta_whatsapp: str
+
+    # Procedência dos dados (tudo vem de coleta real executada pelo backend)
+    dados_disponiveis: bool = True
+    fonte_dados: str = ""
+    coletado_em: datetime | None = None
+    chuva_estacao_1h_mm: Decimal | None = None
+    chuva_estacao_24h_mm: Decimal | None = None
+    foto_estacao_url: str | None = None
+    foto_estacao_data_hora: datetime | None = None

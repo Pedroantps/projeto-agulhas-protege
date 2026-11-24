@@ -27,7 +27,7 @@ export const PainelCorrelacao: React.FC<PainelCorrelacaoProps> = ({
           </p>
           <span className="inline-flex items-center gap-1.5 mt-1 text-xs font-medium text-brand">
             <Sparkles className="size-3.5" aria-hidden="true" />
-            Calibrado com foco em eventos de cheia ({eventosCriticos} medições com rio &gt; 2,50m)
+            Base real: {eventosCriticos} leituras do rio na cota de alerta ou acima, nos últimos 90 dias
           </span>
         </div>
       </div>
@@ -98,7 +98,7 @@ export const PainelCorrelacao: React.FC<PainelCorrelacaoProps> = ({
             </div>
             <div className="flex items-center justify-between pt-0.5">
               <span className="text-slate-600 dark:text-slate-300">Índice Saturação:</span>
-              <span className="font-bold text-amber-600 dark:text-amber-400">{telemetria.saturacao_solo_sjb_percent}% (Alto)</span>
+              <span className="font-bold text-amber-600 dark:text-amber-400">{telemetria.saturacao_solo_sjb_percent}% ({telemetria.saturacao_solo_sjb_percent >= 70 ? 'Alto' : telemetria.saturacao_solo_sjb_percent >= 40 ? 'Moderado' : 'Baixo'})</span>
             </div>
           </div>
         </div>

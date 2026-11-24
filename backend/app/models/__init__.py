@@ -2,6 +2,7 @@
 
 from app.models.alerta import Alerta
 from app.models.audit_log import AuditLog
+from app.models.coleta import ColetaBacia
 from app.models.estacao import EstacaoMonitoramento
 from app.models.leitura import LeituraNivel, NivelRiscoEnum
 from app.models.niveis_risco import NivelRisco
@@ -12,6 +13,7 @@ from app.models.usuario import PerfilUsuario, Usuario
 __all__ = [
     "Alerta",
     "AuditLog",
+    "ColetaBacia",
     "EstacaoMonitoramento",
     "LeituraNivel",
     "NivelRisco",

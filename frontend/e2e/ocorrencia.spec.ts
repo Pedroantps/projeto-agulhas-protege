@@ -51,8 +51,8 @@ test.describe('Registro de Ocorrência', () => {
 
     // Login como operador
     await page.goto('/login');
-    await page.fill('#email', 'operador@defesacivil.resende.rj.gov.br');
-    await page.fill('#senha', 'Operador@2026');
+    await page.fill('#email', 'testecomum@teste.com');
+    await page.fill('#senha', 'Teste@2029');
     await page.click('#btn-login');
     await page.waitForURL(/.*dashboard/);
   });

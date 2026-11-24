@@ -45,7 +45,7 @@ describe('FormOcorrencia', () => {
 
   it('envia a ocorrência com sucesso e chama onConcluir', async () => {
     const onConcluir = vi.fn();
-    vi.spyOn(api, 'criarOcorrencia').mockResolvedValue(undefined);
+    vi.spyOn(api, 'criarOcorrencia').mockResolvedValue({} as api.OcorrenciaItem);
 
     render(<FormOcorrencia estacaoId="est-1" onConcluir={onConcluir} />, {
       wrapper,

@@ -35,7 +35,7 @@ describe('PainelPrevisaoIA', () => {
     render(<PainelPrevisaoIA previsoes={mockPrevisoes} />);
 
     expect(
-      screen.getByText(/Modelo Preditivo de IA — Projeção do Rio Sesmaria/i),
+      screen.getByText(/Modelo Preditivo — Projeção do Rio Sesmaria/i),
     ).toBeInTheDocument();
     expect(screen.getByText('+24h (Amanhã)')).toBeInTheDocument();
     expect(screen.getByText('2.62')).toBeInTheDocument();

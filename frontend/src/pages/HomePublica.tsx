@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Droplets, LogIn, RefreshCw } from 'lucide-react';
-import { CardNivelAtual, GraficoHistorico } from '@/components';
+import {
+  CardNivelAtual,
+  CardProcedenciaDados,
+  GraficoHistorico,
+} from '@/components';
 
 import { CardSkeleton, Panel, ThemeToggle } from '@/components/common';
 import { useEstacoes } from '@/hooks/useEstacoes';
@@ -129,6 +133,8 @@ export const HomePublica: React.FC = () => {
                 ))}
           </div>
         </section>
+
+        <CardProcedenciaDados />
 
         {/* Seção 2: Gráficos Históricos (Acesso Aberto) */}
         {estacaoAtivaId && (

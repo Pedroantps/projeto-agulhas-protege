@@ -245,3 +245,18 @@ async def test_refresh_token_expirado_rejeitado(
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Sessão inválida."
+
+
+@pytest.mark.asyncio
+async def test_me_retorna_usuario_da_sessao(
+    client: AsyncClient, admin_cookies: dict[str, str]
+) -> None:
+    resposta = await client.get("/api/v1/auth/me", cookies=admin_cookies)
+    assert resposta.status_code == 200
+    assert resposta.json()["perfil"] == "ADMINISTRADOR"
+
+
+@pytest.mark.asyncio
+async def test_me_sem_sessao_retorna_401(client: AsyncClient) -> None:
+    resposta = await client.get("/api/v1/auth/me")
+    assert resposta.status_code == 401

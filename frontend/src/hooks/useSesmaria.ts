@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import {
   fetchAlertaWhatsApp,
   fetchSesmariaDashboard,
+  fetchStatusColeta,
+  type StatusColeta,
   type SesmariaDashboardResponse,
 } from '@/services/api';
 
@@ -21,3 +23,10 @@ export const useAlertaWhatsApp = () => {
     staleTime: 60_000,
   });
 };
+
+export const useStatusColeta = () =>
+  useQuery<StatusColeta>({
+    queryKey: ['coleta', 'status'],
+    queryFn: fetchStatusColeta,
+    refetchInterval: 60_000,
+  });

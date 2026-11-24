@@ -215,14 +215,35 @@ Abra um novo terminal e siga os passos:
 
 ---
 
+## 📡 Dados Reais (coleta feita pelo backend)
+
+O backend busca sozinho, a cada 10 minutos (`COLETA_INTERVALO_MINUTOS`), as fontes públicas abaixo e grava no PostgreSQL. Nenhum cliente (web ou mobile) precisa consultar essas fontes diretamente.
+
+| Dado | Fonte | Onde é usado |
+|---|---|---|
+| Nível do Rio Sesmaria (série horária) | CEMADEN, estação `330420118H` | Cards, gráfico histórico, classificação de risco |
+| Chuva medida e foto da câmera | CEMADEN, mesma estação | Painel "Dados da Estação em Tempo Real" |
+| Chuva observada e prevista (Resende e São José do Barreiro) | Open-Meteo | Previsão +24h/+48h/+72h e telemetria da bacia |
+| Vazão defluente da Represa do Funil | ONS Dados Abertos | Painel do Funil e correlação |
+
+O painel de previsão usa um modelo hidrológico simplificado (tanque linear com cenários de chuva), calculado sobre esses dados. As correlações de Pearson são calculadas sobre as leituras reais armazenadas. A recomendação para o Funil é uma heurística de apoio à decisão e não substitui comunicados oficiais.
+
+Endpoints novos: `GET /api/v1/coleta/status` (público), `POST /api/v1/coleta/executar` (admin), `GET /api/v1/auth/me` (restaura sessão) e `DELETE /api/v1/ocorrencias/{id}` (com auditoria).
+
+> **Windows:** o `psycopg` assíncrono não funciona no loop padrão do Windows. Para rodar a API fora do Docker no Windows, use `uv run python scripts/run_dev.py`.
+
+## 🚀 Deploy
+
+Veja [docs/PLANO_DEPLOY.md](docs/PLANO_DEPLOY.md) (passo a passo) e [docs/ROTEIRO_DE_TESTES.md](docs/ROTEIRO_DE_TESTES.md) (roteiro de validação).
+
 ## 🔑 Credenciais Padrão de Acesso (Seed)
 
 O script de inicialização (`scripts/seed.py`) cadastra as seguintes contas para testes locais:
 
 | Perfil | E-mail | Senha | Acesso / Permissões |
 |:---|:---|:---|:---|
-| **Administrador** | `admin@defesacivil.resende.rj.gov.br` | `Admin@2026` | Acesso total: Portal público, Dashboard (`/dashboard`), IA Sesmaria, Registro de Ocorrências e Gestão de Cotas de Risco (`/admin`). |
-| **Operador Defesa Civil** | `operador@defesacivil.resende.rj.gov.br` | `Operador@2026` | Acesso operacional: Portal público, Dashboard (`/dashboard`), visualização de telemetria, IA Sesmaria e Registro de Ocorrências. |
+| **Administrador** | `testeadmin@teste.com` | `Teste@2029` | Acesso total: Portal público, Dashboard (`/dashboard`), IA Sesmaria, Registro de Ocorrências e Gestão de Cotas de Risco (`/admin`). |
+| **Operador Defesa Civil (usuário comum)** | `testecomum@teste.com` | `Teste@2029` | Acesso operacional: Portal público, Dashboard (`/dashboard`), visualização de telemetria, IA Sesmaria e Registro de Ocorrências. |
 | **Cidadão (Público)** | *Não requer autenticação* | — | Acesso livre à página inicial (`/`): telemetria atual, gráficos históricos e avisos públicos. |
 
 ---
