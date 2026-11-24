@@ -1,5 +1,5 @@
 # Blueprint do Render: um único serviço web (API + frontend). O banco PostgreSQL é externo
-# (Neon, Supabase ou Render Postgres): informe a connection string em DATABASE_URL.
+# (Supabase): informe a connection string em DATABASE_URL.
 services:
   - type: web
     name: agulhas-protege
